@@ -28,6 +28,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: cd Lobby Servers/Lobby Plugin && mvn -B package --file pom.xml
+      run: cd Lobby\ Servers/Lobby\ Plugin && mvn -B package --file pom.xml
     # - name: Copy files
     #   run: cp target/Labyrinth-v2.jar /home/gamex/minecraft/labyrinth_version_2/plugins/Labyrinth-v2.jar

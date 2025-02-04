@@ -3,20 +3,13 @@ package net.frostlightgames.lobbyPlugin.Functions;
 import net.frostlightgames.lobbyPlugin.LobbyPlugin;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
-import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.bukkit.entity.*;
-import org.bukkit.Particle.Trail;
 
 import java.io.IOException;
 import java.io.*;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -62,8 +55,6 @@ public class Functions {
         }
     }
 
-
-
     public void setParticle(){
         try{
             JSONParser parser = new JSONParser();
@@ -79,8 +70,11 @@ public class Functions {
                 double y = Double.parseDouble(coord[1]) + 1.5;
                 double z = Double.parseDouble(coord[2]) + 0.5;
                 Location location = new Location(Bukkit.getServer().getWorld("world"),x,y,z);
-
-                spawnParticles(location);
+                double startColorHSV[] = new double[3];
+                startColorHSV[0] = 134;
+                startColorHSV[1] = 100;
+                startColorHSV[2] = 69;
+                spawnParticles(location, startColorHSV);
             }
 
         } catch (IOException | ParseException e){
@@ -88,21 +82,70 @@ public class Functions {
         }
     }
 
-    public void spawnParticles(Location location) {
-        //Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "particle minecraft:happy_villager" + location.x() + location.y() + location.z() + "0.5 1 0.5 0.1 1 normal");
+    public void spawnParticles(Location location, double[] startColorHSV) {
         // Partikel mit Dust
         Random random = new Random();
-        //Random yChange = new Random();
-        //Random zChange = new Random();
+        int color[] = new int[3];
+        color = colorChangeHsvToRgb( startColorHSV[0],startColorHSV[1], startColorHSV[2], color);
+        startColorHSV[0] = (startColorHSV[0]+1)%360;
 
         Location newLocation = new Location(Bukkit.getServer().getWorld("world"),location.x() + random.nextGaussian()*0.4-0.2,location.y() + random.nextGaussian()*0.8,location.z() + random.nextGaussian()*0.4-0.2);
-        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(0, 177, 41), 0.6f);
+        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(color[0], color[1], color[2]), 0.6f);
         Bukkit.getServer().getWorld("world").spawnParticle(Particle.DUST, newLocation, 10, dustOptions);
 
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {spawnParticles(location);}, 2);
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {spawnParticles(location, startColorHSV);}, 2);
     }
 
-    public void colorChangeHsvToRgb(){
+    public int[] colorChangeHsvToRgb(double hue, double saturation, double value, int[] color){
+        double normalizeSaturation;
+        double normalizeValue;
 
+        if (saturation > 1){
+            normalizeSaturation = saturation/100;
+        } else {
+            normalizeSaturation = saturation;
+        }
+        if (value > 1){
+            normalizeValue = value/100;
+        } else {
+            normalizeValue = value;
+        }
+
+        double delta = normalizeSaturation * normalizeValue;
+        double minRGB = normalizeValue - delta;
+
+        double x = delta * ( 1 - Math.abs((hue/60)%2-1));
+        double r,g,b;
+        if ( hue >= 0 && hue < 60){
+            r = delta;
+            g = x;
+            b = 0;
+        } else if ( hue >= 60 && hue <120){
+            r = x;
+            g = delta;
+            b = 0;
+        } else if ( hue >= 120 && hue <180){
+            r = 0;
+            g = delta;
+            b = x;
+        } else if ( hue >= 180 && hue <240){
+            r = 0;
+            g = x;
+            b = delta;
+        } else if ( hue >= 240 && hue <300){
+            r = x;
+            g = 0;
+            b = delta;
+        } else {
+            r = delta;
+            g = 0;
+            b = x;
+        }
+        color[0] = (int) Math.round((r + minRGB) *255);
+        color[1] = (int) Math.round(( g + minRGB) *255);
+        color[2] = (int) Math.round(( b + minRGB) *255);
+
+
+        return color;
     }
 }

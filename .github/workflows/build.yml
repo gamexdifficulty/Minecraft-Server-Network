@@ -30,4 +30,4 @@ jobs:
     - name: Build with Maven
       run: cd Lobby\ Servers/Lobby\ Plugin && mvn -B package --file pom.xml
     - name: Copy files
-      run: cp "target/LobbyPlugin-1.0-SNAPSHOT.jar" "/home/gamex/Frostlight MC Network/Lobby Servers/Galaxy Plaza/plugins/LobbyPlugin.jar"
+      run: cp "target/LobbyPlugin-1.0.jar" "/home/gamex/Frostlight MC Network/Lobby Servers/Galaxy Plaza/plugins/LobbyPlugin-1.0.jar"

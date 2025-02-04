@@ -1,0 +1,4 @@
+name: LobbyPlugin
+version: '1.0-SNAPSHOT'
+main: net.frostlightgames.lobbyPlugin.LobbyPlugin
+api-version: '1.21'

@@ -1,0 +1,9 @@
+{
+    "lobby_server":"",
+    "velocity":{
+        "version":"xxx"
+    },
+    "paper":{
+        "server_locations":["/"]
+    }
+}

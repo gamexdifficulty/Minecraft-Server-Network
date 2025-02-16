@@ -31,3 +31,5 @@ jobs:
       run: cd Lobby\ Servers/Lobby\ Plugin && mvn -B package --file pom.xml
     - name: Copy files
       run: cp "/home/gamex/actions-runner/_work/Minecraft-Server-Network/Minecraft-Server-Network/Lobby Servers/Lobby Plugin/target/LobbyPlugin-1.0.jar" "/home/gamex/Frostlight MC Network/Lobby Servers/Galaxy Plaza/plugins/LobbyPlugin-1.0.jar"
+    - name: Reload Server
+      run: screen -S lobby -p 0 -X stuff "^Mreload confirm^M"
